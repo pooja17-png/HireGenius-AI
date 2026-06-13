@@ -304,9 +304,6 @@ export default function App() {
 
       <footer className="footer">
         <div className="container">
-          <p className="footer-brand">
-            HireGenius AI · Built with FastAPI + React
-          </p>
           <p className="footer-copy">
             © {new Date().getFullYear()} SPA Labs. All Rights Reserved.
           </p>
