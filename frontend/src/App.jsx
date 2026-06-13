@@ -45,6 +45,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const analyzeRef = useRef(null);
 
@@ -79,6 +80,7 @@ export default function App() {
   }
 
   function goAnalyze() {
+    setMenuOpen(false);
     setTab("analyze");
     setTimeout(
       () => analyzeRef.current?.scrollIntoView({ behavior: "smooth" }),
@@ -87,8 +89,15 @@ export default function App() {
   }
 
   function goInterview() {
+    setMenuOpen(false);
     setTab("interview");
     setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 30);
+  }
+
+  function goHome() {
+    setMenuOpen(false);
+    setTab("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
@@ -96,16 +105,37 @@ export default function App() {
       {/* NAV */}
       <nav className="nav">
         <div className="container nav-inner">
-          <div className="brand">
-            <img src="/logo.svg" alt="" />
+          <div
+            className="brand"
+            onClick={goHome}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) =>
+              (e.key === "Enter" || e.key === " ") && goHome()
+            }
+          >
+            <img src="/logo.svg" alt="HireGenius AI logo" />
             <span>
               Hire<b>Genius</b> AI
             </span>
           </div>
-          <div className="nav-links">
+
+          {/* Hamburger — only shown on mobile via CSS */}
+          <button
+            className={`nav-toggle ${menuOpen ? "open" : ""}`}
+            aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
+          <div className={`nav-links ${menuOpen ? "open" : ""}`}>
             <button
               className={tab === "home" ? "active" : ""}
-              onClick={() => setTab("home")}
+              onClick={goHome}
             >
               Home
             </button>
@@ -135,6 +165,15 @@ export default function App() {
             </span>
           </div>
         </div>
+
+        {/* Backdrop behind the mobile drawer */}
+        {menuOpen && (
+          <div
+            className="nav-backdrop"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+        )}
       </nav>
 
       {/* HERO */}
@@ -265,7 +304,15 @@ export default function App() {
 
       <footer className="footer">
         <div className="container">
-          HireGenius AI · Built with FastAPI + React · {new Date().getFullYear()}
+          <p className="footer-brand">
+            HireGenius AI · Built with FastAPI + React
+          </p>
+          <p className="footer-copy">
+            © {new Date().getFullYear()} SPA Labs. All Rights Reserved.
+          </p>
+          <p className="footer-tagline">
+            Building AI-Powered Digital Solutions.
+          </p>
         </div>
       </footer>
     </>

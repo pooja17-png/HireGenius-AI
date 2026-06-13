@@ -40,7 +40,21 @@ html,
 body,
 #root {
   margin: 0;
-  height: 100%;
+  min-height: 100%;
+  /* Prevent any element from forcing a horizontal scrollbar */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
 }
 
 body {
@@ -112,6 +126,7 @@ a {
   font-weight: 600;
   font-size: 20px;
   color: var(--ink);
+  cursor: pointer;
 }
 .brand img {
   width: 38px;
@@ -127,6 +142,43 @@ a {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+/* Hamburger button — hidden on desktop, shown on mobile via media query */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--paper);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.nav-toggle span {
+  display: block;
+  height: 2.5px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.nav-toggle.open span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.nav-toggle.open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.open span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+.nav-backdrop {
+  display: none;
 }
 .nav-links button {
   background: transparent;
@@ -316,11 +368,18 @@ a {
 .grid-2 {
   grid-template-columns: 1.1fr 0.9fr;
 }
-@media (max-width: 860px) {
+/* Tablet: 3-up grids become 2-up, 2-up stacks */
+@media (max-width: 1024px) {
   .grid-3 {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+/* Mobile: everything single column */
+@media (max-width: 640px) {
+  .grid-3 {
     grid-template-columns: 1fr;
   }
 }
@@ -712,6 +771,26 @@ textarea:focus {
   text-align: center;
   background: rgba(243, 239, 228, 0.4);
 }
+.footer p {
+  margin: 0;
+}
+.footer-brand {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.footer-copy {
+  margin-top: 10px !important;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--ink);
+}
+.footer-tagline {
+  margin-top: 4px !important;
+  font-style: italic;
+  font-family: var(--font-display);
+  color: var(--teal-deep);
+  font-size: 14px;
+}
 
 .muted {
   color: var(--muted);
@@ -730,4 +809,250 @@ textarea:focus {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+/* =====================================================================
+   RESPONSIVE — mobile-first breakpoints
+   Tablet:  <= 1024px
+   Mobile:  <= 640px
+   ===================================================================== */
+
+/* ---------- Tablet and below (<= 1024px) ---------- */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 22px;
+  }
+  .hero {
+    padding: 64px 0 28px;
+  }
+  .hero h1 {
+    font-size: clamp(30px, 6vw, 52px);
+  }
+  .stats {
+    gap: 40px;
+  }
+  .section {
+    padding: 38px 0 60px;
+  }
+}
+
+/* ---------- Mobile (<= 640px) ---------- */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  /* ---- Nav: hamburger + slide-out drawer ---- */
+  .nav-inner {
+    height: 64px;
+  }
+  .brand {
+    font-size: 17px;
+    gap: 10px;
+  }
+  .brand img {
+    width: 32px;
+    height: 32px;
+  }
+  .nav-toggle {
+    display: flex;
+  }
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 64px;
+    background: rgba(43, 42, 40, 0.35);
+    z-index: 40;
+    animation: fade 0.2s ease both;
+  }
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    right: 0;
+    z-index: 45;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: min(78vw, 320px);
+    height: calc(100vh - 64px);
+    padding: 16px;
+    background: var(--ivory);
+    border-left: 1px solid var(--line);
+    box-shadow: -16px 0 40px -20px rgba(43, 42, 40, 0.4);
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-y: auto;
+  }
+  .nav-links.open {
+    transform: translateX(0);
+  }
+  .nav-links button {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    min-height: 48px; /* touch target */
+  }
+  .nav-links .status-dot {
+    margin-top: 8px;
+    align-self: flex-start;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    padding: 48px 0 20px;
+    text-align: center;
+  }
+  .pill {
+    font-size: 12.5px;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(27px, 8.5vw, 38px);
+  }
+  .hero p {
+    font-size: 16px;
+    margin-top: 16px;
+  }
+  .hero-cta {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .hero-cta .btn {
+    width: 100%;
+  }
+  .stats {
+    gap: 26px;
+    margin-top: 40px;
+  }
+  .stat b {
+    font-size: 28px;
+  }
+
+  /* ---- Sections ---- */
+  .section {
+    padding: 30px 0 48px;
+  }
+  .section-head {
+    margin-bottom: 28px;
+  }
+  .section-head h2 {
+    font-size: clamp(23px, 6.5vw, 30px);
+  }
+  .section-head p {
+    font-size: 15.5px;
+  }
+  .grid {
+    gap: 16px;
+  }
+
+  /* ---- Cards ---- */
+  .card {
+    padding: 20px;
+    border-radius: var(--radius-sm);
+  }
+  .card .ic {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+
+  /* ---- Buttons: full-width, comfortable touch targets ---- */
+  .btn {
+    width: 100%;
+    padding: 14px 20px;
+    min-height: 48px;
+  }
+
+  /* ---- Uploader ---- */
+  .dropzone {
+    padding: 34px 16px;
+  }
+  .dropzone .big {
+    font-size: 38px;
+  }
+  .dropzone h3 {
+    font-size: 18px;
+  }
+
+  /* ---- Results: ATS ring + score ---- */
+  .score-ring {
+    width: 150px;
+    height: 150px;
+  }
+  .score-ring .val b {
+    font-size: 36px;
+  }
+
+  /* ---- Inputs ---- */
+  textarea {
+    font-size: 16px; /* >=16px stops iOS auto-zoom on focus */
+    padding: 14px;
+  }
+
+  /* ---- Skill chips wrap & stay readable ---- */
+  .tags {
+    gap: 8px;
+  }
+  .tag {
+    font-size: 13px;
+    padding: 7px 12px;
+  }
+
+  /* ---- Resume text block: keep long words from overflowing ---- */
+  .resume-text {
+    font-size: 13px;
+    padding: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- Interview question cards ---- */
+  .q-list {
+    gap: 12px;
+  }
+  .q-item {
+    padding: 16px 16px 16px 16px;
+  }
+  /* On mobile move the number inline above the question instead of absolute */
+  .q-item {
+    padding-left: 16px;
+  }
+  .q-item::before {
+    position: static;
+    display: inline-grid;
+    margin-bottom: 10px;
+  }
+  .q-top {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .q-text,
+  .q-tip {
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- Footer ---- */
+  .footer {
+    padding: 26px 0;
+    font-size: 13px;
+  }
+
+  /* Buttons inside flex toggles (e.g. "Show all answers") shouldn't stretch */
+  .q-toggle,
+  .card-link {
+    width: auto;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
