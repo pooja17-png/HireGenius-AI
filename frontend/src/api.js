@@ -1,6 +1,6 @@
 // Central API client for the HireGenius AI backend.
-// In dev, Vite proxies /api -> http://127.0.0.1:8000 (see vite.config.js).
-const BASE = "/api";
+// In dev, Vite proxies /api -> http://127.0.0.1:10000 (see vite.config.js).
+const BASE = import.meta.env.VITE_API_URL;
 
 /**
  * Upload a resume PDF to the backend.
